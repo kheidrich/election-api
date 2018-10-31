@@ -55,6 +55,6 @@ public class ElectionApi {
     @DeleteMapping("/{electionId}")
     @ApiOperation(value = "Delete election")
     public GenericOutput delete(@PathVariable Long electionId){
-        return new GenericOutput("OK");
+        return electionService.delete(electionId);
     }
 }

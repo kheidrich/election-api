@@ -5,6 +5,7 @@ import br.edu.ulbra.election.election.exception.GenericOutputException;
 import br.edu.ulbra.election.election.input.v1.ElectionInput;
 import br.edu.ulbra.election.election.model.Election;
 import br.edu.ulbra.election.election.output.v1.ElectionOutput;
+import br.edu.ulbra.election.election.output.v1.GenericOutput;
 import br.edu.ulbra.election.election.repository.ElectionRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -22,6 +23,7 @@ public class ElectionService {
 
     private static final String MESSAGE_INVALID_ID = "Invalid id";
     private static final String MESSAGE_ELECTION_NOT_FOUND = "Election not found";
+    private static final String MESSAGE_ELECTION_DELETED = "Election deleted";
 
     @Autowired
     public ElectionService(ElectionRepository electionRepository, ModelMapper modelMapper) {
@@ -83,6 +85,19 @@ public class ElectionService {
         election = electionRepository.save(election);
 
         return modelMapper.map(election, ElectionOutput.class);
+    }
+
+    public GenericOutput delete(Long electionId) {
+        if (electionId == null)
+            throw new GenericOutputException(MESSAGE_INVALID_ID);
+
+        Election election = electionRepository.findById(electionId).orElse(null);
+        if (election == null)
+            throw new GenericOutputException(MESSAGE_ELECTION_NOT_FOUND);
+
+        electionRepository.delete(election);
+
+        return new GenericOutput(MESSAGE_ELECTION_DELETED);
     }
 
     private void validateInput(ElectionInput input) {
