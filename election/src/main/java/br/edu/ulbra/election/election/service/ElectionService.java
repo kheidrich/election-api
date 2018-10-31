@@ -1,5 +1,9 @@
 package br.edu.ulbra.election.election.service;
 
+import antlr.StringUtils;
+import br.edu.ulbra.election.election.exception.GenericOutputException;
+import br.edu.ulbra.election.election.input.v1.ElectionInput;
+import br.edu.ulbra.election.election.model.Election;
 import br.edu.ulbra.election.election.output.v1.ElectionOutput;
 import br.edu.ulbra.election.election.repository.ElectionRepository;
 import org.modelmapper.ModelMapper;
@@ -22,9 +26,28 @@ public class ElectionService {
         this.modelMapper = modelMapper;
     }
 
-    public List<ElectionOutput> getAll(){
-        Type electionOutputListType = new TypeToken<List<ElectionOutput>>(){}.getType();
+    public List<ElectionOutput> getAll() {
+        Type electionOutputListType = new TypeToken<List<ElectionOutput>>() {
+        }.getType();
         return modelMapper.map(electionRepository.findAll(), electionOutputListType);
     }
 
+    public ElectionOutput create(ElectionInput electionInput) {
+        validateInput(electionInput);
+        Election election = modelMapper.map(electionInput, Election.class);
+        election = electionRepository.save(election);
+
+        return modelMapper.map(election, ElectionOutput.class);
+    }
+
+    private void validateInput(ElectionInput input) {
+        if (input.getYear() < 0)
+            throw new GenericOutputException("Invalid year");
+
+        if (input.getStateCode().length() != 2)
+            throw new GenericOutputException("Invalid state code");
+
+        if (input.getDescription().isEmpty())
+            throw new GenericOutputException("Must provide a description");
+    }
 }

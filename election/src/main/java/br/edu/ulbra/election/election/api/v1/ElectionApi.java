@@ -43,7 +43,7 @@ public class ElectionApi {
     @PostMapping("/")
     @ApiOperation(value = "Create new election")
     public ElectionOutput create(@RequestBody ElectionInput electionInput){
-        return new ElectionOutput();
+        return electionService.create(electionInput);
     }
 
     @PutMapping("/{electionId}")
