@@ -20,6 +20,9 @@ public class ElectionService {
     private final ElectionRepository electionRepository;
     private final ModelMapper modelMapper;
 
+    private static final String MESSAGE_INVALID_ID = "Invalid id";
+    private static final String MESSAGE_ELECTION_NOT_FOUND = "Election not found";
+
     @Autowired
     public ElectionService(ElectionRepository electionRepository, ModelMapper modelMapper) {
         this.electionRepository = electionRepository;
@@ -32,14 +35,27 @@ public class ElectionService {
         return modelMapper.map(electionRepository.findAll(), electionOutputListType);
     }
 
+    public ElectionOutput getById(Long electionId) {
+        if (electionId == null)
+            throw new GenericOutputException(MESSAGE_INVALID_ID);
+
+        Election election = electionRepository.findById(electionId).orElse(null);
+        if (election == null)
+            throw new GenericOutputException(MESSAGE_ELECTION_NOT_FOUND);
+
+        return modelMapper.map(election, ElectionOutput.class);
+    }
+
     public List<ElectionOutput> getByYear(Integer year) {
-        Type electionOutputListType = new TypeToken<List<ElectionOutput>>() {}.getType();
+        Type electionOutputListType = new TypeToken<List<ElectionOutput>>() {
+        }.getType();
         List<Election> electionsOfTheYear = new ArrayList<>();
 
         for (Election election : electionRepository.findAll()) {
             if (election.getYear().equals(year))
                 electionsOfTheYear.add(election);
         }
+
         return modelMapper.map(electionsOfTheYear, electionOutputListType);
     }
 
@@ -52,13 +68,13 @@ public class ElectionService {
     }
 
     private void validateInput(ElectionInput input) {
-        if (input.getYear() < 0)
+        if (input.getYear() != null && input.getYear() < 0)
             throw new GenericOutputException("Invalid year");
 
-        if (input.getStateCode().length() != 2)
+        if (input.getStateCode() != null && input.getStateCode().length() != 2)
             throw new GenericOutputException("Invalid state code");
 
-        if (input.getDescription().isEmpty())
+        if (input.getDescription() != null && input.getDescription().isEmpty())
             throw new GenericOutputException("Must provide a description");
     }
 }

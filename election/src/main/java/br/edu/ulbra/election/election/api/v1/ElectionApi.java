@@ -37,7 +37,7 @@ public class ElectionApi {
     @GetMapping("/{electionId}")
     @ApiOperation(value = "Get election by Id")
     public ElectionOutput getById(@PathVariable Long electionId){
-        return new ElectionOutput();
+        return electionService.getById(electionId);
     }
 
     @PostMapping("/")
