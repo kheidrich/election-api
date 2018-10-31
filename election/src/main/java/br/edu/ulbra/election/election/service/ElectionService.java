@@ -32,6 +32,17 @@ public class ElectionService {
         return modelMapper.map(electionRepository.findAll(), electionOutputListType);
     }
 
+    public List<ElectionOutput> getByYear(Integer year) {
+        Type electionOutputListType = new TypeToken<List<ElectionOutput>>() {}.getType();
+        List<Election> electionsOfTheYear = new ArrayList<>();
+
+        for (Election election : electionRepository.findAll()) {
+            if (election.getYear().equals(year))
+                electionsOfTheYear.add(election);
+        }
+        return modelMapper.map(electionsOfTheYear, electionOutputListType);
+    }
+
     public ElectionOutput create(ElectionInput electionInput) {
         validateInput(electionInput);
         Election election = modelMapper.map(electionInput, Election.class);
