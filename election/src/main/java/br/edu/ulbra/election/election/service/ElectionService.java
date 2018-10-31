@@ -67,6 +67,24 @@ public class ElectionService {
         return modelMapper.map(election, ElectionOutput.class);
     }
 
+    public ElectionOutput update(Long electionId, ElectionInput electionInput) {
+        if (electionId == null)
+            throw new GenericOutputException(MESSAGE_INVALID_ID);
+
+        validateInput(electionInput);
+
+        Election election = electionRepository.findById(electionId).orElse(null);
+        if (election == null)
+            throw new GenericOutputException(MESSAGE_ELECTION_NOT_FOUND);
+
+        election.setYear(electionInput.getYear());
+        election.setStateCode(electionInput.getStateCode());
+        election.setDescription(electionInput.getDescription());
+        election = electionRepository.save(election);
+
+        return modelMapper.map(election, ElectionOutput.class);
+    }
+
     private void validateInput(ElectionInput input) {
         if (input.getYear() != null && input.getYear() < 0)
             throw new GenericOutputException("Invalid year");

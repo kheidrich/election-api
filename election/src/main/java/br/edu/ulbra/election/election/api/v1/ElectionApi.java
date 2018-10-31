@@ -49,7 +49,7 @@ public class ElectionApi {
     @PutMapping("/{electionId}")
     @ApiOperation(value = "Update election")
     public ElectionOutput update(@PathVariable Long electionId, @RequestBody ElectionInput electionInput){
-        return new ElectionOutput();
+        return electionService.update(electionId, electionInput);
     }
 
     @DeleteMapping("/{electionId}")
