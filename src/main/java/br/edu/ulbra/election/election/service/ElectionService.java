@@ -101,13 +101,13 @@ public class ElectionService {
     }
 
     private void validateInput(ElectionInput input) {
-        if (input.getYear() != null && input.getYear() < 0)
+        if (input.getYear() == null || input.getYear() < 2000 || input.getYear() > 2200)
             throw new GenericOutputException("Invalid year");
 
-        if (input.getStateCode() != null && input.getStateCode().length() != 2)
+        if (input.getStateCode() == null || input.getStateCode().length() != 2)
             throw new GenericOutputException("Invalid state code");
 
-        if (input.getDescription() != null && input.getDescription().isEmpty())
-            throw new GenericOutputException("Must provide a description");
+        if (input.getDescription() == null || input.getDescription().length() < 5)
+            throw new GenericOutputException("Invalid description");
     }
 }
