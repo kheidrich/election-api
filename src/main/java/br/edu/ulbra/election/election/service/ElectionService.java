@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -104,10 +105,16 @@ public class ElectionService {
         if (input.getYear() == null || input.getYear() < 2000 || input.getYear() > 2200)
             throw new GenericOutputException("Invalid year");
 
-        if (input.getStateCode() == null || input.getStateCode().length() != 2)
+        if (input.getStateCode() == null || !validStateScode(input.getStateCode()))
             throw new GenericOutputException("Invalid state code");
 
         if (input.getDescription() == null || input.getDescription().length() < 5)
             throw new GenericOutputException("Invalid description");
+    }
+
+    private boolean validStateScode(String stateCode) {
+        ArrayList<String> brazillianStateCodes = new ArrayList<>(Arrays.asList("BR", "RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF"));
+
+        return brazillianStateCodes.contains(stateCode);
     }
 }
