@@ -40,6 +40,16 @@ public class VoteService {
         return votes;
     }
 
+    public List<VoteOutput> getByVoterId(Long voterId){
+        List<VoteOutput> votes = new ArrayList<>();
+
+        for(Vote v : voteRepository.findAll())
+            if(v.getVoterId().equals(voterId))
+                votes.add(modelMapper.map(v, VoteOutput.class));
+
+        return votes;
+    }
+
     public GenericOutput vote(VoteInput voteInput) {
         if (!electionExists(voteInput.getElectionId()))
             throw new GenericOutputException("Invalid election");

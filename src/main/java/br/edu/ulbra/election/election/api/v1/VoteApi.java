@@ -3,6 +3,7 @@ package br.edu.ulbra.election.election.api.v1;
 import br.edu.ulbra.election.election.input.v1.VoteInput;
 import br.edu.ulbra.election.election.output.v1.GenericOutput;
 import br.edu.ulbra.election.election.output.v1.VoteOutput;
+import br.edu.ulbra.election.election.output.v1.VoterOutput;
 import br.edu.ulbra.election.election.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,11 @@ public class VoteApi {
     @GetMapping("/{electionId}")
     public List<VoteOutput> getByElectionId(@PathVariable(name = "electionId") Long electionId) {
         return voteService.getByElectionId(electionId);
+    }
+
+    @GetMapping("/voter/{voterId}")
+    public List<VoteOutput> getByVoterOutput(@PathVariable(name = "voterId") Long voterId){
+        return voteService.getByVoterId(voterId);
     }
 
     @PutMapping("/{electionId}")
