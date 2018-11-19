@@ -21,13 +21,15 @@ public class VoteService {
     private final ModelMapper modelMapper;
     private final VoterClientService voterClientService;
     private final ElectionRepository electionRepository;
+    private final CandidateClientService candidateClientService;
 
     @Autowired
-    public VoteService(VoteRepository voteRepository, ModelMapper modelMapper, VoterClientService voterClientService, ElectionRepository electionRepository) {
+    public VoteService(VoteRepository voteRepository, ModelMapper modelMapper, VoterClientService voterClientService, ElectionRepository electionRepository, CandidateClientService candidateClientService) {
         this.voteRepository = voteRepository;
         this.modelMapper = modelMapper;
         this.voterClientService = voterClientService;
         this.electionRepository = electionRepository;
+        this.candidateClientService = candidateClientService;
     }
 
     public List<VoteOutput> getByElectionId(Long electionId){
@@ -60,6 +62,12 @@ public class VoteService {
         if (alreadyVoted(voteInput.getElectionId(), voteInput.getVoterId()))
             throw new GenericOutputException("Already voted in this election");
 
+        if(!candidateExists(voteInput.getCandidateId()))
+            voteInput.setCandidateId(null);
+
+        if(voteInput.getCandidateId() == null)
+            voteInput.setCandidateId(0L);
+
         Vote vote = modelMapper.map(voteInput, Vote.class);
         voteRepository.save(vote);
 
@@ -84,6 +92,15 @@ public class VoteService {
             this.voterClientService.getById(voterId);
             return true;
         } catch (FeignException e) {
+            return false;
+        }
+    }
+
+    private boolean candidateExists(Long candidateId){
+        try {
+            candidateClientService.getById();
+            return true;
+        } catch (FeignException e){
             return false;
         }
     }

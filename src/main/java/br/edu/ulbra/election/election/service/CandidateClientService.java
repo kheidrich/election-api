@@ -16,6 +16,10 @@ public class CandidateClientService {
         this.candidateClient = candidateClient;
     }
 
+    public CandidateOutput getById(Long candidateId){
+        return this.candidateClient.getById(candidateId);
+    }
+
     public List<CandidateOutput> getByElectionId(Long electionId){
         return this.candidateClient.getByElectionId(electionId);
     }

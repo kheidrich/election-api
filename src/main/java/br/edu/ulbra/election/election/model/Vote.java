@@ -15,7 +15,7 @@ public class Vote {
     @Column(nullable = false)
     private Long voterId;
 
-    @Column(nullable = false)
+    @Column()
     private Long candidateId;
 
     public Long getId() {
