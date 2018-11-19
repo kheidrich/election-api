@@ -141,12 +141,8 @@ public class ElectionService {
     }
 
     private boolean electionHasCandidate(Long electionId) {
-        List<CandidateOutput> candidates = this.candidateClientService.getAll();
+        List<CandidateOutput> candidates = this.candidateClientService.getByElectionId(electionId);
 
-        for (CandidateOutput c : candidates)
-            if (c.getElectionOutput().getId().equals(electionId))
-                return true;
-
-        return false;
+        return candidates.size() > 0;
     }
 }

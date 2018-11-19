@@ -10,9 +10,6 @@ import java.util.List;
 @FeignClient(value = "candidate-service", url = "${url.candidate-service}")
 public interface CandidateClient {
 
-    @GetMapping("/v1/candidate/{candidateId}")
-    CandidateOutput getById(@PathVariable(name = "candidateId") Long candidateId);
-
-    @GetMapping("/v1/candidate")
-    List<CandidateOutput> getAll();
+    @GetMapping("/v1/candidate/election/{electionId}")
+    List<CandidateOutput> getByElectionId(@PathVariable(name = "electionId") Long electionId);
 }

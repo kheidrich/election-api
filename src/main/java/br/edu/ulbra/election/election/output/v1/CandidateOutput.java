@@ -16,9 +16,6 @@ public class CandidateOutput {
     @ApiModelProperty(notes = "Candidate Party Data")
     private PartyOutput partyOutput;
 
-    private ElectionOutput electionOutput;
-
-
     public String getName() {
         return name;
     }
@@ -41,13 +38,5 @@ public class CandidateOutput {
 
     public void setPartyOutput(PartyOutput partyOutput) {
         this.partyOutput = partyOutput;
-    }
-
-    public ElectionOutput getElectionOutput() {
-        return electionOutput;
-    }
-
-    public void setElectionOutput(ElectionOutput electionOutput) {
-        this.electionOutput = electionOutput;
     }
 }
