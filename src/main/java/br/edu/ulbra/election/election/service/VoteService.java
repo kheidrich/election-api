@@ -14,13 +14,14 @@ import java.util.List;
 
 @Service
 public class VoteService {
-
-    private VoteRepository voteRepository;
-    private ModelMapper modelMapper;
+    private final VoteRepository voteRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public VoteService(VoteRepository voteRepository) {
+    public VoteService(VoteRepository voteRepository, ModelMapper modelMapper) {
+
         this.voteRepository = voteRepository;
+        this.modelMapper = modelMapper;
     }
 
     public GenericOutput vote(VoteInput voteInput) {
@@ -29,7 +30,7 @@ public class VoteService {
             throw new GenericOutputException("Already voted in this election");
 
         Vote vote = modelMapper.map(voteInput, Vote.class);
-        vote = voteRepository.save(vote);
+        voteRepository.save(vote);
 
         return new GenericOutput("Ok");
     }

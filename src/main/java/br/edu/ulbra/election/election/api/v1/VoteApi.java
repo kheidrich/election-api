@@ -22,7 +22,7 @@ public class VoteApi {
         this.voteService = voteService;
     }
 
-    @PutMapping("/{electionId}")
+    @PutMapping("/vote")
     public GenericOutput electionVote(@RequestBody VoteInput voteInput){
         return voteService.vote(voteInput);
     }
