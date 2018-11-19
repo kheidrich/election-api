@@ -5,6 +5,8 @@ import br.edu.ulbra.election.election.output.v1.CandidateOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CandidateClientService {
     private final CandidateClient candidateClient;
@@ -16,5 +18,9 @@ public class CandidateClientService {
 
     public CandidateOutput getById(Long id){
         return this.candidateClient.getById(id);
+    }
+
+    public List<CandidateOutput> getAll(){
+        return this.candidateClient.getAll();
     }
 }

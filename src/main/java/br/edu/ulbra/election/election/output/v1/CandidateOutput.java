@@ -1,5 +1,6 @@
 package br.edu.ulbra.election.election.output.v1;
 
+import br.edu.ulbra.election.election.model.Election;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,6 +15,9 @@ public class CandidateOutput {
     private Long numberElection;
     @ApiModelProperty(notes = "Candidate Party Data")
     private PartyOutput partyOutput;
+
+    private ElectionOutput electionOutput;
+
 
     public String getName() {
         return name;
@@ -37,5 +41,13 @@ public class CandidateOutput {
 
     public void setPartyOutput(PartyOutput partyOutput) {
         this.partyOutput = partyOutput;
+    }
+
+    public ElectionOutput getElectionOutput() {
+        return electionOutput;
+    }
+
+    public void setElectionOutput(ElectionOutput electionOutput) {
+        this.electionOutput = electionOutput;
     }
 }
