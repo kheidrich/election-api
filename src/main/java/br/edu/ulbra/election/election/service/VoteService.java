@@ -1,12 +1,8 @@
 package br.edu.ulbra.election.election.service;
 
-import br.edu.ulbra.election.election.client.CandidateClient;
 import br.edu.ulbra.election.election.exception.GenericOutputException;
 import br.edu.ulbra.election.election.input.v1.VoteInput;
-import br.edu.ulbra.election.election.model.Election;
 import br.edu.ulbra.election.election.model.Vote;
-import br.edu.ulbra.election.election.output.v1.CandidateOutput;
-import br.edu.ulbra.election.election.output.v1.ElectionOutput;
 import br.edu.ulbra.election.election.output.v1.GenericOutput;
 import br.edu.ulbra.election.election.repository.ElectionRepository;
 import br.edu.ulbra.election.election.repository.VoteRepository;
@@ -19,14 +15,14 @@ import org.springframework.stereotype.Service;
 public class VoteService {
     private final VoteRepository voteRepository;
     private final ModelMapper modelMapper;
-    private final CandidateClientService candidateClientService;
+    private final VoterClientService voterClientService;
     private final ElectionRepository electionRepository;
 
     @Autowired
-    public VoteService(VoteRepository voteRepository, ModelMapper modelMapper, CandidateClientService candidateClientService, ElectionRepository electionRepository) {
+    public VoteService(VoteRepository voteRepository, ModelMapper modelMapper, VoterClientService voterClientService, ElectionRepository electionRepository) {
         this.voteRepository = voteRepository;
         this.modelMapper = modelMapper;
-        this.candidateClientService = candidateClientService;
+        this.voterClientService = voterClientService;
         this.electionRepository = electionRepository;
     }
 
@@ -34,7 +30,7 @@ public class VoteService {
         if (!electionExists(voteInput.getElectionId()))
             throw new GenericOutputException("Invalid election");
 
-        if(!candidateExists(voteInput.getCandidateId()))
+        if(!voterExists(voteInput.getVoterId()))
             throw new GenericOutputException("Invalid candidate");
 
         if (alreadyVoted(voteInput.getElectionId(), voteInput.getVoterId()))
@@ -59,9 +55,9 @@ public class VoteService {
         return this.electionRepository.findById(electionId).orElse(null) != null;
     }
 
-    private boolean candidateExists(Long candidateId) {
+    private boolean voterExists(Long voterId) {
         try {
-            this.candidateClientService.getById(candidateId);
+            this.voterClientService.getById(voterId);
             return true;
         } catch (FeignException e) {
             return false;
