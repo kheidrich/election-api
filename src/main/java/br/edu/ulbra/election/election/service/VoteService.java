@@ -4,12 +4,16 @@ import br.edu.ulbra.election.election.exception.GenericOutputException;
 import br.edu.ulbra.election.election.input.v1.VoteInput;
 import br.edu.ulbra.election.election.model.Vote;
 import br.edu.ulbra.election.election.output.v1.GenericOutput;
+import br.edu.ulbra.election.election.output.v1.VoteOutput;
 import br.edu.ulbra.election.election.repository.ElectionRepository;
 import br.edu.ulbra.election.election.repository.VoteRepository;
 import feign.FeignException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class VoteService {
@@ -24,6 +28,16 @@ public class VoteService {
         this.modelMapper = modelMapper;
         this.voterClientService = voterClientService;
         this.electionRepository = electionRepository;
+    }
+
+    public List<VoteOutput> getByElectionId(Long electionId){
+        List<VoteOutput> votes = new ArrayList<>();
+
+        for(Vote v : voteRepository.findAll())
+            if(v.getElectionId().equals(electionId))
+                votes.add(modelMapper.map(v, VoteOutput.class));
+
+        return votes;
     }
 
     public GenericOutput vote(VoteInput voteInput) {
