@@ -1,40 +1,40 @@
 package br.edu.ulbra.election.election.output.v1;
 
 public class VoteOutput {
-    private long id;
-    private long electionId;
-    private long voterId;
-    private long candidateId;
+    private Long id;
+    private Long electionId;
+    private Long voterId;
+    private Long candidateId;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getElectionId() {
+    public Long getElectionId() {
         return electionId;
     }
 
-    public void setElectionId(long electionId) {
+    public void setElectionId(Long electionId) {
         this.electionId = electionId;
     }
 
-    public long getVoterId() {
+    public Long getVoterId() {
         return voterId;
     }
 
-    public void setVoterId(long voterId) {
+    public void setVoterId(Long voterId) {
         this.voterId = voterId;
     }
 
-    public long getCandidateId() {
+    public Long getCandidateId() {
         return candidateId;
     }
 
-    public void setCandidateId(long candidateId) {
+    public void setCandidateId(Long candidateId) {
         this.candidateId = candidateId;
     }
 }

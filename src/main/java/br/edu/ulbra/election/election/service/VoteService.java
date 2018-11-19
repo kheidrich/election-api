@@ -32,21 +32,21 @@ public class VoteService {
         this.candidateClientService = candidateClientService;
     }
 
-    public List<VoteOutput> getByElectionId(Long electionId){
+    public List<VoteOutput> getByElectionId(Long electionId) {
         List<VoteOutput> votes = new ArrayList<>();
 
-        for(Vote v : voteRepository.findAll())
-            if(v.getElectionId().equals(electionId))
+        for (Vote v : voteRepository.findAll())
+            if (v.getElectionId().equals(electionId))
                 votes.add(modelMapper.map(v, VoteOutput.class));
 
         return votes;
     }
 
-    public List<VoteOutput> getByVoterId(Long voterId){
+    public List<VoteOutput> getByVoterId(Long voterId) {
         List<VoteOutput> votes = new ArrayList<>();
 
-        for(Vote v : voteRepository.findAll())
-            if(v.getVoterId().equals(voterId))
+        for (Vote v : voteRepository.findAll())
+            if (v.getVoterId().equals(voterId))
                 votes.add(modelMapper.map(v, VoteOutput.class));
 
         return votes;
@@ -56,17 +56,17 @@ public class VoteService {
         if (!electionExists(voteInput.getElectionId()))
             throw new GenericOutputException("Invalid election");
 
-        if(!voterExists(voteInput.getVoterId()))
-            throw new GenericOutputException("Invalid candidate");
+        if (!voterExists(voteInput.getVoterId()))
+            throw new GenericOutputException("Invalid voter");
 
         if (alreadyVoted(voteInput.getElectionId(), voteInput.getVoterId()))
             throw new GenericOutputException("Already voted in this election");
 
-        if(!candidateExists(voteInput.getCandidateId()))
+        if (voteInput.getCandidateId() == null)
+            voteInput.setCandidateId(0L);
+        else if (!candidateExists(voteInput.getCandidateId()))
             voteInput.setCandidateId(null);
 
-        if(voteInput.getCandidateId() == null)
-            voteInput.setCandidateId(0L);
 
         Vote vote = modelMapper.map(voteInput, Vote.class);
         voteRepository.save(vote);
@@ -96,11 +96,11 @@ public class VoteService {
         }
     }
 
-    private boolean candidateExists(Long candidateId){
+    private boolean candidateExists(Long candidateId) {
         try {
-            candidateClientService.getById();
+            candidateClientService.getById(candidateId);
             return true;
-        } catch (FeignException e){
+        } catch (FeignException e) {
             return false;
         }
     }
