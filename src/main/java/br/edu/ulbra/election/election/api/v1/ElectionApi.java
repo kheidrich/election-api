@@ -39,7 +39,13 @@ public class ElectionApi {
     public ElectionOutput getById(@PathVariable Long electionId){
         return electionService.getById(electionId);
     }
-
+/*
+    @GetMapping("/{partyId}")
+    @ApiOperation(value = "Get party by Id")
+    public ElectionOutput getById(@PathVariable Long electionId){
+        return electionService.getById(electionId);
+    }
+*/
     @PostMapping("/")
     @ApiOperation(value = "Create new election")
     public ElectionOutput create(@RequestBody ElectionInput electionInput){
