@@ -2,30 +2,45 @@ package br.edu.ulbra.election.election.service;
 
 import br.edu.ulbra.election.election.exception.GenericOutputException;
 import br.edu.ulbra.election.election.model.Election;
+import br.edu.ulbra.election.election.model.Vote;
+import br.edu.ulbra.election.election.output.v1.CandidateOutput;
+import br.edu.ulbra.election.election.output.v1.ElectionCandidateResultOutput;
 import br.edu.ulbra.election.election.output.v1.ElectionOutput;
 import br.edu.ulbra.election.election.output.v1.ResultOutput;
 import br.edu.ulbra.election.election.repository.ElectionRepository;
+import br.edu.ulbra.election.election.repository.VoteRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ResultService {
 
     private final ModelMapper modelMapper;
     private final ElectionRepository electionRepository;
+    private final VoteRepository voteRepository;
+    private final CandidateClientService candidateClientService;
 
     private static final String MESSAGE_INVALID_ID = "Invalid id";
     private static final String MESSAGE_ELECTION_NOT_FOUND = "Election not found";
 
     @Autowired
-    public ResultService(ModelMapper modelMapper, ElectionRepository electionRepository){
-
+    public ResultService(
+            ModelMapper modelMapper,
+            ElectionRepository electionRepository,
+            VoteRepository voteRepository,
+            CandidateClientService candidateClientService
+    ) {
         this.modelMapper = modelMapper;
         this.electionRepository = electionRepository;
+        this.voteRepository = voteRepository;
+        this.candidateClientService = candidateClientService;
     }
 
-    public ResultOutput getResultByElection(Long electionId){
+    public ResultOutput getElectionResult(Long electionId) {
         ResultOutput result = new ResultOutput();
 
         if (electionId == null)
@@ -35,8 +50,70 @@ public class ResultService {
             throw new GenericOutputException(MESSAGE_ELECTION_NOT_FOUND);
 
         result.setElection(modelMapper.map(election, ElectionOutput.class));
+        result.setCandidates(generateCandidatesResults(electionId));
+        result.setTotalVotes(countTotalVotes(electionId));
+        result.setBlankVotes(countBlankVotes(electionId));
+        result.setNullVotes(countNullVotes(electionId));
 
         return result;
+    }
+
+    private List<ElectionCandidateResultOutput> generateCandidatesResults(Long electionId) {
+        List<CandidateOutput> electionCandidates;
+        List<ElectionCandidateResultOutput> results = new ArrayList<ElectionCandidateResultOutput>();
+
+        electionCandidates = candidateClientService.getByElectionId(electionId);
+        for (CandidateOutput candidate : electionCandidates) {
+            ElectionCandidateResultOutput candidateResult = new ElectionCandidateResultOutput();
+
+            candidateResult.setCandidate(candidate);
+            candidateResult.setTotalVotes(countCandidateVotes(candidate.getId()));
+            results.add(candidateResult);
+        }
+
+        return results;
+    }
+
+    private Long countCandidateVotes(Long candidateId) {
+        Long votes = 0L;
+
+        for (Vote vote : voteRepository.findAll())
+            if (vote.getCandidateId() != null && vote.getCandidateId().equals(candidateId))
+                votes++;
+
+        return votes;
+    }
+
+    private Long countTotalVotes(Long electionId) {
+        Long total = 0L;
+
+        for (Vote vote : voteRepository.findAll())
+            if (vote.getElectionId().equals(electionId))
+                total++;
+
+        return total;
+    }
+
+    private Long countBlankVotes(Long electionId) {
+        Long blank = 0L;
+
+        for (Vote vote : voteRepository.findAll())
+            if (vote.getElectionId().equals(electionId)
+                    && vote.getCandidateId() != null
+                    && vote.getCandidateId().equals(0L))
+                blank++;
+
+        return blank;
+    }
+
+    private Long countNullVotes(Long electionId) {
+        Long nullVote = 0L;
+
+        for (Vote vote : voteRepository.findAll())
+            if (vote.getElectionId().equals(electionId) && vote.getCandidateId() == null)
+                nullVote++;
+
+        return nullVote;
     }
 }
 

@@ -21,7 +21,7 @@ public class ResultApi {
 
     @GetMapping("/election/{electionId}")
     public ResultOutput getResultByElection(@PathVariable Long electionId){
-       return this.resultService.getResultByElection(electionId);
+       return this.resultService.getElectionResult(electionId);
     }
 
     @GetMapping("/candidate/{candidateId}")
