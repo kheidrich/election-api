@@ -9,6 +9,7 @@ import br.edu.ulbra.election.election.output.v1.ElectionOutput;
 import br.edu.ulbra.election.election.output.v1.ResultOutput;
 import br.edu.ulbra.election.election.repository.ElectionRepository;
 import br.edu.ulbra.election.election.repository.VoteRepository;
+import feign.FeignException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,24 @@ public class ResultService {
         result.setNullVotes(countNullVotes(electionId));
 
         return result;
+    }
+
+    public ElectionCandidateResultOutput getElectionCanditateResult(Long candidateId) {
+        ElectionCandidateResultOutput candidateResult = new ElectionCandidateResultOutput();
+
+        try {
+            CandidateOutput candidate = candidateClientService.getById(candidateId);
+
+            candidateResult.setCandidate(candidate);
+            candidateResult.setTotalVotes(countCandidateVotes(candidateId));
+
+            return candidateResult;
+        } catch (FeignException e) {
+            if (e.status() == 404)
+                throw new GenericOutputException("Candidate not found");
+            else
+                throw new GenericOutputException("Error in retrieving candidate");
+        }
     }
 
     private List<ElectionCandidateResultOutput> generateCandidatesResults(Long electionId) {
