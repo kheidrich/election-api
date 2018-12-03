@@ -1,6 +1,7 @@
 package br.edu.ulbra.election.election.service;
 
 import br.edu.ulbra.election.election.exception.GenericOutputException;
+import br.edu.ulbra.election.election.input.v1.TokenValidationInput;
 import br.edu.ulbra.election.election.input.v1.VoteInput;
 import br.edu.ulbra.election.election.model.Vote;
 import br.edu.ulbra.election.election.output.v1.GenericOutput;
@@ -53,6 +54,13 @@ public class VoteService {
     }
 
     public GenericOutput vote(VoteInput voteInput) {
+        TokenValidationInput tokenValidationInput = new TokenValidationInput();
+        tokenValidationInput.setToken(voteInput.getToken());
+        tokenValidationInput.setVoterId(voteInput.getVoterId());
+
+        if(!voterClientService.validateToken(tokenValidationInput).getValid())
+            throw new GenericOutputException("Invalid token");
+
         if (!electionExists(voteInput.getElectionId()))
             throw new GenericOutputException("Invalid election");
 

@@ -12,6 +12,7 @@ public class VoteInput {
     private Long voterId;
     @ApiModelProperty(example = "3", notes = "Candidate Unique Identifier")
     private Long candidateId;
+    private String token;
 
     public Long getElectionId() {
         return electionId;
@@ -35,5 +36,13 @@ public class VoteInput {
 
     public void setCandidateId(Long candidateId) {
         this.candidateId = candidateId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
