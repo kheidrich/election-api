@@ -40,6 +40,9 @@ public class VoteApi {
 
     @PutMapping("/multiple")
     public GenericOutput multipleElectionVote(@RequestBody List<VoteInput> voteInputList) {
-        return new GenericOutput("OK");
+        for(VoteInput voteInput : voteInputList)
+            voteService.vote(voteInput);
+
+        return new GenericOutput("Ok");
     }
 }
